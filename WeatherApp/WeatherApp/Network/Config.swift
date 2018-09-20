@@ -1,16 +1,18 @@
 //
 //  Config.swift
-//  GYGtest
+//  WeatherApp
 //
-//  Created by Hnatiuk, Volodymyr on 25.08.18.
-//  Copyright © 2018 GYG. All rights reserved.
+//  Created by Volodymyr Gnatiuk on 20.09.18.
+//  Copyright © 2018 openweather. All rights reserved.
 //
 
 import Foundation
 
 struct Config {
-    struct GYGServer {
-        static let BaseUrl = "https://www.getyourguide.com"
-        static let ApiVersion = ""
+    struct WeatherServer {
+        static let BaseUrl = "http://api.openweathermap.org"
+        static let ApiVersion = "/data/2.5/"
+        static let ApiKey = "8cf271dc2e840c7a837795366d97ad4e"
+        static let IconEndpoint = "http://openweathermap.org/img/w/"
     }
 }

@@ -1,9 +1,9 @@
 //
 //  StringExt.swift
-//  GYGtest
+//  WeatherApp
 //
-//  Created by Hnatiuk, Volodymyr on 25.08.18.
-//  Copyright © 2018 GYG. All rights reserved.
+//  Created by Volodymyr Gnatiuk on 20.09.18.
+//  Copyright © 2018 openweather. All rights reserved.
 //
 
 import Foundation

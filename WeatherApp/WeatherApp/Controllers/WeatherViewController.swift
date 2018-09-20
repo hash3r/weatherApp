@@ -1,104 +1,98 @@
 //
 //  WeatherViewController.swift
-//  GYGtest
+//  WeatherApp
 //
-//  Created by Hnatiuk, Volodymyr on 25.08.18.
-//  Copyright © 2018 GYG. All rights reserved.
+//  Created by Volodymyr Gnatiuk on 20.09.18.
+//  Copyright © 2018 openweather. All rights reserved.
 //
 
 import UIKit
 
-class WeatherViewController: UIViewController, WeatherViewControllerProtocol {
+class WeatherViewController: UIViewController {
     
     @IBOutlet private weak var tableView: UITableView!
     @IBOutlet private weak var noSearchResultsLabel: UILabel!
-    @IBOutlet private weak var sortButton: UIButton!
-    @IBOutlet private weak var sortDirectionIcon: UIImageView!
+    @IBOutlet private weak var searchBar: UISearchBar!
     
-    private let viewModel = WeatherViewModel()
-    weak var delegate: WeatherViewControllerDelegate?
+    private let viewModel: WeatherViewModelProtocol = WeatherViewModel()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTableView()
-        loadData(initial: true)
+        configureSearchBar()
     }
     
-    func loadData(initial: Bool = false) {
-        if initial {
-            viewModel.resetRequest()
-            tableView.reloadData()
-        }
-        viewModel.searchForNextPage(initial: initial).done { [weak self] updateUI in
+    func configureSearchBar() {
+        UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).defaultTextAttributes = [NSAttributedStringKey.foregroundColor.rawValue: UIColor.white]
+        searchBar.becomeFirstResponder()
+    }
+    
+    func loadData() {
+        viewModel.loadData({ [weak self] updateUI in
             if updateUI {
-                self?.updateUI(initial)
+                self?.updateUI()
             }
-        }.catch { [weak self] (error) in
-            self?.updateUI(initial)
+        }) { [weak self] error in
+            self?.updateUI(error)
         }
     }
 
     private  func configureTableView() {
         tableView.tableFooterView = UIView()
         tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.estimatedRowHeight = 100
+        tableView.rowHeight = 140
         tableView.showsVerticalScrollIndicator = true
     }
     
-    private func updateUI(_ initial: Bool = false) {
-        if dataSource().count == 0 {
+    private func updateUI(_ error: Error? = nil) {
+        if let _ = error {
+            noSearchResultsLabel.isHidden = false
+            tableView.isHidden = true
+            return
+        }
+        if dataSource().days.count == 0 {
             noSearchResultsLabel.isHidden = false
             tableView.isHidden = true
         } else {
             noSearchResultsLabel.isHidden = true
             tableView.reloadData()
-            if initial {
-                scrollToTop()
-            }
+            scrollToTop()
             tableView.isHidden = false
         }
     }
     
     private func scrollToTop() {
-        if dataSource().count > 0 {
+        if dataSource().days.count > 0 {
             let topIndex = IndexPath(row: 0, section: 0)
             tableView.scrollToRow(at: topIndex, at: .top, animated: false)
         }
     }
     
-    private func dataSource() -> [ReviewModel] {
-        return viewModel.searchReviews
-    }
-    
-    @IBAction func sortButtonAction(_ sender: UIButton) {
-        let newDirection = self.viewModel.queryModel.sortDirection.invert()
-        self.viewModel.queryModel.sortDirection = newDirection
-        self.sortDirectionIcon.image = UIImage(named: newDirection.assetName())
-        self.loadData(initial: true)
+    private func dataSource() -> ForecastModel {
+        return viewModel.forecast
     }
 }
 
 // MARK: - UITableViewDataSource
+
 extension WeatherViewController: UITableViewDelegate, UITableViewDataSource {
     
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return dataSource().days.count
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let loadingCell = viewModel.queryModel.pagination.isLastPage() ? 0 : 1
-        return dataSource().count == 0 ? 0 : dataSource().count + loadingCell
+        return 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if dataSource().count > 0 && dataSource().count == indexPath.row {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "LoadingCell") as! LoadingCell
-            return cell
-        } else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "ReviewCell") as! ReviewCell
-            cell.data = viewModel.searchReviews[indexPath.row]
-            return cell
-        }
+        let cell = tableView.dequeueReusableCell(withIdentifier: DayWeatherCell.Key) as! DayWeatherCell
+        cell.dayForecast = viewModel.forecast.days[indexPath.section]
+        return cell
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if dataSource().count > 0 && dataSource().count == indexPath.row {
+        if dataSource().days.count > 0 && dataSource().days.count == indexPath.row {
             if viewModel.isLoading == false {
                 loadData()
             }
@@ -106,3 +100,15 @@ extension WeatherViewController: UITableViewDelegate, UITableViewDataSource {
     }
 }
 
+// MARK: - UISearchBarDelegate
+
+extension WeatherViewController: UISearchBarDelegate {
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        if let text = searchBar.text, viewModel.queryModel.city != searchBar.text {
+            viewModel.queryModel.city = text
+            loadData()
+        }
+        searchBar.resignFirstResponder()
+    }
+}

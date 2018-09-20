@@ -1,44 +1,31 @@
 //
 //  Router.swift
-//  GYGtest
+//  WeatherApp
 //
-//  Created by Hnatiuk, Volodymyr on 25.08.18.
-//  Copyright © 2018 GYG. All rights reserved.
+//  Created by Volodymyr Gnatiuk on 20.09.18.
+//  Copyright © 2018 openweather. All rights reserved.
 //
 
-//import Alamofire
-//import SwiftyJSON
+import Foundation
 
-///// Router builds URLRequest from a target model
-//public struct Router {
-//
-//    private let target: TargetType
-//
-//    init(_ target: TargetType) {
-//        self.target = target
-//    }
-//    
-//    private func url() -> URL {
-//        let fullUrl = target.baseUrl() + target.path()
-//        return URL(string: fullUrl.encodeURLQuery())!
-//    }
-//    
-//    private func headers() -> HTTPHeaders {
-//        return target.headers()
-//    }
-//}
-//
-//// MARK: URLRequestConvertible
-//extension Router: URLRequestConvertible {
-//
-//    public func asURLRequest() -> URLRequest {
-//        var request = try! URLRequest(url: url(), method: target.method(), headers: headers())
-//        request.httpMethod = target.method().rawValue
-//        
-//        if let params = target.params() {
-//            let data = try? JSON(params).rawData()
-//            request.httpBody = data
-//        }
-//        return request
-//    }
-//}
+/// Router builds URLRequest from a target model
+public struct Router {
+
+    private let target: TargetType
+
+    init(_ target: TargetType) {
+        self.target = target
+    }
+    
+    private func url() -> URL? {
+        let fullUrl = target.baseUrl() + target.path()
+        return URL(string: fullUrl.encodeURLQuery())
+    }
+
+    public func asURLRequest() -> URLRequest? {
+        guard let url = url() else { return nil }
+        var request = URLRequest(url: url)
+        request.httpMethod = target.method().rawValue
+        return request
+    }
+}

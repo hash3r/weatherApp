@@ -1,34 +1,41 @@
-////
-////  TargetType.swift
-////  GYGtest
-////
-////  Created by Hnatiuk, Volodymyr on 25.08.18.
-////  Copyright © 2018 GYG. All rights reserved.
-////
 //
-//import Alamofire
+//  TargetType.swift
+//  WeatherApp
 //
-//public typealias PathType = String
-//public typealias ParametersType = Any
+//  Created by Volodymyr Gnatiuk on 20.09.18.
+//  Copyright © 2018 openweather. All rights reserved.
 //
-///// Protocol describes endpoints metadata
-//public protocol TargetType {
-//    
-//    func baseUrl() -> PathType
-//    func path() -> PathType
-//    func method() -> Alamofire.HTTPMethod
-//    func params() -> ParametersType?
-//    func headers() -> HTTPHeaders
-//}
-//
-///// implement default behaviour
-//extension TargetType {
-//    
-//    func params() -> ParametersType? {
-//        return nil
-//    }
-//    
-//    func headers() -> HTTPHeaders {
-//        return HTTPHeaders()
-//    }
-//}
+
+public typealias PathType = String
+public typealias ParametersType = [String: Any]
+
+public enum HTTPMethod: String {
+    case get = "GET"
+    case post = "POST"
+}
+
+/// Protocol describes endpoints metadata
+public protocol TargetType {
+    
+    func baseUrl() -> PathType
+    func path() -> PathType
+    func method() -> HTTPMethod
+    func params() -> ParametersType?
+    func headers() -> ParametersType
+}
+
+/// implement default behaviour
+extension TargetType {
+    
+    func baseUrl() -> PathType {
+        return Config.WeatherServer.BaseUrl + Config.WeatherServer.ApiVersion
+    }
+    
+    func params() -> ParametersType? {
+        return nil
+    }
+    
+    func headers() -> ParametersType {
+        return [:]
+    }
+}

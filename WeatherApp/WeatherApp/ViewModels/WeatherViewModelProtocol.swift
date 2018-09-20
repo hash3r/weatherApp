@@ -1,9 +1,9 @@
 //
 //  WeatherViewModelProtocol.swift
-//  GYGtest
+//  WeatherApp
 //
-//  Created by Hnatiuk, Volodymyr on 25.08.18.
-//  Copyright © 2018 GYG. All rights reserved.
+//  Created by Volodymyr Gnatiuk on 20.09.18.
+//  Copyright © 2018 openweather. All rights reserved.
 //
 
 import Foundation
@@ -12,7 +12,7 @@ import Foundation
 protocol WeatherViewModelProtocol {
 
     /// Data source
-    var weatherModel: [WeatherModel] { get }
+    var forecast: ForecastModel { get }
     
     /// Progress state
     var isLoading: Bool { get }
@@ -23,5 +23,5 @@ protocol WeatherViewModelProtocol {
     /// Method asks for the next chunk of data
     ///
     /// - Returns: promise with a suggestion to update UI
-    func loadData() //-> Promise<Bool>
+    func loadData(_ success: @escaping SuccessCompletion<Bool>, _ failure: @escaping FailureCompletion)
 }

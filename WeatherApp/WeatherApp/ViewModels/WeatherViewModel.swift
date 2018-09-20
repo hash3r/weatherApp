@@ -1,18 +1,19 @@
 //
 //  WeatherViewModel.swift
-//  GYGtest
+//  WeatherApp
 //
-//  Created by Hnatiuk, Volodymyr on 25.08.18.
-//  Copyright © 2018 GYG. All rights reserved.
+//  Created by Volodymyr Gnatiuk on 20.09.18.
+//  Copyright © 2018 openweather. All rights reserved.
 //
 
+import Foundation
 
 class WeatherViewModel: WeatherViewModelProtocol {
     
-    
-    private(set) var weatherModel = [WeatherModel]()
+    private(set) var forecast = ForecastModel()
     private(set) var isLoading = false
     internal var queryModel: WeatherQueryModel!
+    internal var dataTask: URLSessionDataTask?
     
     init() {
         configureQueryModel()
@@ -20,37 +21,32 @@ class WeatherViewModel: WeatherViewModelProtocol {
     
     private func configureQueryModel() {
         queryModel = WeatherQueryModel()
-        //Mock data for demo
-//        queryModel?.city = "berlin-l17"
-//        queryModel?.tour = "tempelhof-2-hour-airport-history-tour-berlin-airlift-more-t23776"
     }
     
-    func loadData() {
-        if (self.isLoading == true) {
-//            return Promise.value(false)
+    func loadData(_ success: @escaping SuccessCompletion<Bool>, _ failure: @escaping FailureCompletion) {
+        if self.isLoading == true {
+            resetRequest()
         }
         self.isLoading = true
 
-//        let target = ReviewTarget.search(query: self.queryModel)
-//
-//
-//        Rest.shared.mappableRequest(target).map(on: DispatchQueue.global(), { (searchResult: ReviewsResponseModel) -> () in
-//                self.queryModel.pagination.totalCount = searchResult.pagination.totalCount
-//                self.queryModel.pagination.incrementPage()
-//                self.searchReviews.append(contentsOf: searchResult.reviews)
-//
-//                seal.fulfill(true)
-//                self.isLoading = false
-//            }).catch ({ (error) in
-//                seal.reject(error)
-//                self.isLoading = false
-//            })
+        let target = WeatherTarget.forecast(query: self.queryModel)
+        dataTask = RestAPI.shared.mappableRequest(target, success: { (forecast: ForecastModel) in
+            self.forecast = forecast
+            self.isLoading = false
+            DispatchQueue.main.async {
+                success(true)
+            }
+        }) { error in
+            self.isLoading = false
+            DispatchQueue.main.async {
+                failure(error)
+            }
+        }
     }
     
-    
     func resetRequest() {
+        dataTask?.cancel()
         self.isLoading = false
-        self.weatherModel.removeAll(keepingCapacity: true)
     }
 }
 

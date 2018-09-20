@@ -2,7 +2,7 @@
 //  AppDelegate.swift
 //  WeatherApp
 //
-//  Created by Vladimir Gnatiuk on 9/13/18.
+//  Created by Volodymyr Gnatiuk on 20.09.18.
 //  Copyright © 2018 openweather. All rights reserved.
 //
 
