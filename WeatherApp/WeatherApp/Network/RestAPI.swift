@@ -23,6 +23,10 @@ open class RestAPI {
     @discardableResult
     open func mappableRequest<T: Decodable>(_ target: TargetType, success: @escaping SuccessCompletion<T>, failure: @escaping FailureCompletion) -> URLSessionDataTask? {
         
+        if let data = target.stubData() {
+            parseData(data, success, failure)
+            return nil
+        }
         guard let request = Router(target).asURLRequest() else {
             failure(.requestError("Unable to create URL from given string"))
             return nil
@@ -41,19 +45,23 @@ open class RestAPI {
                 return
             }
             if self.validate(response) {
-                if let data = data {
-                    do {
-                        let responseObject = try JSONDecoder().decode(T.self, from: data)
-                        success(responseObject)
-                    } catch  {
-                        failure(.parseError(error.localizedDescription))
-                    }
-                } else {
-                    failure(.parseError(String(describing: T.self)))
-                }
+                self.parseData(data, success, failure)
             } else {
                 failure(.serverError)
             }
+        }
+    }
+    
+    private func parseData<T: Decodable>(_ data: Data?, _ success: @escaping SuccessCompletion<T>, _ failure: @escaping FailureCompletion) {
+        if let data = data {
+            do {
+                let responseObject = try JSONDecoder().decode(T.self, from: data)
+                success(responseObject)
+            } catch  {
+                failure(.parseError(error.localizedDescription))
+            }
+        } else {
+            failure(.parseError(String(describing: T.self)))
         }
     }
 

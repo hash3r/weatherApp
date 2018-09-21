@@ -8,11 +8,13 @@
 
 import UIKit
 
+
 class WeatherViewController: UIViewController {
     
     @IBOutlet private weak var tableView: UITableView!
     @IBOutlet private weak var noSearchResultsLabel: UILabel!
     @IBOutlet private weak var searchBar: UISearchBar!
+    @IBOutlet weak var dataSourceSegment: UISegmentedControl!
     
     private let viewModel: WeatherViewModelProtocol = WeatherViewModel()
 
@@ -58,6 +60,18 @@ class WeatherViewController: UIViewController {
             tableView.reloadData()
             scrollToTop()
             tableView.isHidden = false
+        }
+    }
+    
+    @IBAction func dataSourceChanged(_ sender: UISegmentedControl) {
+        if let dataSource = DataSourceType(rawValue: sender.selectedSegmentIndex) {
+            viewModel.queryModel.dataSource = dataSource
+            if dataSource == .stub {
+                searchBar.text = dataSource.city()
+            } else if dataSource == .live {
+                searchBar.text = viewModel.queryModel.city
+            }
+            loadData()
         }
     }
     
@@ -107,6 +121,8 @@ extension WeatherViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         if let text = searchBar.text, viewModel.queryModel.city != searchBar.text {
             viewModel.queryModel.city = text
+            viewModel.queryModel.dataSource = DataSourceType.live
+            dataSourceSegment.selectedSegmentIndex = DataSourceType.live.rawValue
             loadData()
         }
         searchBar.resignFirstResponder()

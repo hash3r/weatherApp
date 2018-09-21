@@ -6,6 +6,8 @@
 //  Copyright © 2018 openweather. All rights reserved.
 //
 
+import Foundation
+
 public typealias PathType = String
 public typealias ParametersType = [String: Any]
 
@@ -22,6 +24,7 @@ public protocol TargetType {
     func method() -> HTTPMethod
     func params() -> ParametersType?
     func headers() -> ParametersType
+    func stubData() -> Data?
 }
 
 /// implement default behaviour
@@ -38,4 +41,9 @@ extension TargetType {
     func headers() -> ParametersType {
         return [:]
     }
+    
+    func stubData() -> Data? {
+        return nil
+    }
+    
 }

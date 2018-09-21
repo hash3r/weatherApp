@@ -6,6 +6,8 @@
 //  Copyright © 2018 openweather. All rights reserved.
 //
 
+import Foundation
+
 enum WeatherTarget {
     case forecast(query: WeatherQueryModel)
 }
@@ -27,5 +29,23 @@ extension WeatherTarget: TargetType {
         switch self {
         case .forecast: return .get
         }
+    }
+    
+    func stubData() -> Data? {
+        switch self {
+        case .forecast(let query):
+            if let stubPath = query.dataSource.path(),
+                let path = Bundle.main.path(forResource: stubPath, ofType: "json") {
+                do {
+                    let data = try Data(contentsOf: URL(fileURLWithPath: path), options: .alwaysMapped)
+                    return data
+                } catch let error {
+                    debugPrint("parse error: \(error.localizedDescription)")
+                }
+            } else {
+                debugPrint("Invalid filename/path.")
+            }
+        }
+        return nil
     }
 }

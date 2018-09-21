@@ -26,7 +26,7 @@
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="viF-zP-AaI">
-                                <rect key="frame" x="0.0" y="76" width="375" height="591"/>
+                                <rect key="frame" x="0.0" y="122" width="375" height="545"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="separatorColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
@@ -133,8 +133,18 @@
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="HVb-1K-Njr"/>
                                 </connections>
                             </tableView>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="kb4-Jd-T2k">
+                                <rect key="frame" x="126" y="30" width="123" height="29"/>
+                                <segments>
+                                    <segment title="   Live   "/>
+                                    <segment title="  Stub   "/>
+                                </segments>
+                                <connections>
+                                    <action selector="dataSourceChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="Qw1-96-ZQm"/>
+                                </connections>
+                            </segmentedControl>
                             <searchBar contentMode="redraw" searchBarStyle="minimal" placeholder="Please enter city" translatesAutoresizingMaskIntoConstraints="NO" id="s5p-cv-xKw">
-                                <rect key="frame" x="0.0" y="20" width="375" height="56"/>
+                                <rect key="frame" x="0.0" y="66" width="375" height="56"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="barTintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -155,12 +165,13 @@
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="s5p-cv-xKw" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="2Hx-Fv-2jf"/>
                             <constraint firstItem="s5p-cv-xKw" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="3hG-fj-hTu"/>
                             <constraint firstItem="Rbv-U7-jUb" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="4tt-Nd-wsA"/>
                             <constraint firstItem="X3S-hn-kOp" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="4xL-6G-9u0"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="viF-zP-AaI" secondAttribute="trailing" id="Az1-IU-cVI"/>
+                            <constraint firstItem="kb4-Jd-T2k" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="10" id="BOz-MT-VgX"/>
                             <constraint firstItem="8Nz-Dd-eSD" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="FN5-E4-axh"/>
+                            <constraint firstItem="s5p-cv-xKw" firstAttribute="top" secondItem="kb4-Jd-T2k" secondAttribute="bottom" constant="8" id="MIx-9h-9Zt"/>
                             <constraint firstItem="s5p-cv-xKw" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="N32-YC-zYx"/>
                             <constraint firstItem="viF-zP-AaI" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="OVK-p5-1SC"/>
                             <constraint firstItem="8Nz-Dd-eSD" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" constant="-30" id="Pq6-nG-GO9"/>
@@ -170,6 +181,7 @@
                             <constraint firstItem="X3S-hn-kOp" firstAttribute="bottom" secondItem="8bC-Xf-vdC" secondAttribute="bottom" id="duf-a7-rly"/>
                             <constraint firstItem="8Nz-Dd-eSD" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="kn3-AN-dVE"/>
                             <constraint firstItem="8Nz-Dd-eSD" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="30" id="l8H-r6-e7M"/>
+                            <constraint firstItem="kb4-Jd-T2k" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="myC-YI-5VC"/>
                             <constraint firstAttribute="bottom" secondItem="Rbv-U7-jUb" secondAttribute="bottom" id="pXd-is-FdK"/>
                             <constraint firstItem="X3S-hn-kOp" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="wwf-nh-WXW"/>
                             <constraint firstItem="Rbv-U7-jUb" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="yH1-Q6-WQc"/>
@@ -178,6 +190,7 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
+                        <outlet property="dataSourceSegment" destination="kb4-Jd-T2k" id="4Gi-bb-FRk"/>
                         <outlet property="noSearchResultsLabel" destination="8Nz-Dd-eSD" id="4rc-4H-XOx"/>
                         <outlet property="searchBar" destination="s5p-cv-xKw" id="8pK-C2-yCn"/>
                         <outlet property="tableView" destination="viF-zP-AaI" id="4FO-rW-Oj8"/>
